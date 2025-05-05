@@ -9,6 +9,9 @@
         display: flex;
         justify-content: center;
       }
+      .legend {
+        text-align: center;
+      }
       .box {
         display: flex;
         flex-direction: column;
@@ -38,6 +41,12 @@
         border-radius: 5px;
         margin: 4px;
         padding: 5px;
+      }
+      .blue table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
       }
     </style>
   </head>
@@ -74,7 +83,7 @@
               <label for="Confipassword">Confirm password:</label>
               <input
                 type="password"
-                id="confirmPassword"
+                id="confiPassword"
                 placeholder="Confirm your password"
               />
             </div>
@@ -101,25 +110,125 @@
             <div>
               <input type="submit" name="submit" value="Submit" />
             </div>
+            <div>
+              <label for="bgColor">Choose Background Color:</label>
+              <input type="color" id="bgColor" name="bgColor" />
+            </div>
           </div>
 
           <div class="beige"></div>
-          <div class="blue"></div>
+          <div class="blue">
+            <table>
+              <thead>
+                <tr>
+                  <th>City</th>
+                  <th>AQI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Dhaka</td>
+                  <td>85</td>
+                </tr>
+                <tr>
+                  <td>Cumilla</td>
+                  <td>110</td>
+                </tr>
+                <tr>
+                  <td>Khulna</td>
+                  <td>95</td>
+                </tr>
+                <tr>
+                  <td>Barisal</td>
+                  <td>78</td>
+                </tr>
+                <tr>
+                  <td>Kustia</td>
+                  <td>102</td>
+                </tr>
+                <tr>
+                  <td>Chandpur</td>
+                  <td>88</td>
+                </tr>
+                <tr>
+                  <td>Nuakhali</td>
+                  <td>75</td>
+                </tr>
+                <tr>
+                  <td>Sylhet</td>
+                  <td>80</td>
+                </tr>
+                <tr>
+                  <td>Rajshahi</td>
+                  <td>90</td>
+                </tr>
+                <tr>
+                  <td>Narshingdi</td>
+                  <td>70</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </form>
 
     <script>
+      document.getElementById("bgColor").addEventListener("input", function () {
+        document.querySelector(".red").style.backgroundColor = this.value;
+      });
       function validate(event) {
         let uname = document.getElementById("username");
         let pass = document.getElementById("password");
         let con_pass = document.getElementById("Confipassword");
         let massageDiv = document.getElementById("massage");
+        let dobInput = document.getElementById("dob").value;
+
+        let dob = new Date(dobInput);
+        let today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+
+        if (!dobInput) {
+          massageDiv.innerHTML = "Please select your date of birth.";
+          return false;
+        }
+        if (age < 18) {
+          massageDiv.innerHTML =
+            "You must be at least 18 years old to register.";
+          return false;
+        }
+
+        const email = document.getElementById("email");
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email.value.trim() === "") {
+          massageDiv.innerHTML = "Email cannot be empty.";
+          return false;
+        }
+        if (!emailRegex.test(email.value)) {
+          massageDiv.innerHTML = "Please enter a valid email address.";
+          return false;
+        }
+
+        if (pass.value == "" || con_pass.value == "") {
+          massageDiv.innerHTML = " password feild can't be empty";
+          return false;
+        }
+        if (pass.value.length < 8) {
+          massageDiv.innerHTML = "Password length must be at least 8 ";
+          return false;
+        }
+        if (pass.value !== con_pass.value) {
+          massageDiv.innerHTML = "passwords are not matched";
+          return false;
+        }
+        document
+          .getElementById("bgColor")
+          .addEventListener("input", function () {
+            document.querySelector(".red").style.backgroundColor = this.value;
+          });
 
         // Regular expression to check if the username only contains letters, hyphen (-), and dot (.)
         let regex = /^[A-Za-z.-]+$/;
-        /*massageDiv.innerHTML = "";*/
-
         if (/\d/.test(uname.value)) {
           massageDiv.innerHTML = " Digits are not allowed.";
         } else if (!regex.test(uname.value)) {
@@ -129,9 +238,9 @@
           massageDiv.innerHTML = "OK: Name is valid.";
         }
 
-        // Prevent form submission
-        event.preventDefault();
-        return false; // Ensure the form doesn't actually submit
+        massageDiv.style.color = "green";
+        massageDiv.innerHTML = " All fields are valid. Form can be submitted!";
+        return true;
       }
     </script>
   </body>
